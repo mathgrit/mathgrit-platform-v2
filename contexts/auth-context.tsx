@@ -4,11 +4,8 @@ import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import { createClient, type User as SupabaseUser } from '@supabase/supabase-js'
 
-// Definisikan tipe untuk user Anda, bisa digabung dengan tipe dari Supabase
-interface User extends SupabaseUser {
-  // Anda bisa menambahkan properti kustom di sini nanti
-  // contoh: xp: number;
-}
+// Impor tipe User gabungan dari file terpusat
+import type { User } from "@/data/types";
 
 interface AuthContextType {
   user: User | null
@@ -18,7 +15,6 @@ interface AuthContextType {
   isLoading: boolean
 }
 
-// Inisialisasi Supabase Client menggunakan Environment Variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -29,26 +25,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // useEffect untuk memeriksa sesi pengguna saat aplikasi dimuat
   useEffect(() => {
-    const checkUserSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user as User);
+    // onAuthStateChange adalah satu-satunya sumber kebenaran untuk status auth.
+    // Ia akan berjalan saat halaman dimuat, saat login, logout, dll.
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const currentUser = session?.user;
+
+      if (currentUser) {
+        // Jika pengguna login, ambil data profilnya dari tabel 'profiles'
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (profileError) {
+          console.error("Gagal mengambil profil:", profileError);
+          // Jika profil gagal diambil, setidaknya set user dasar dari auth
+          setUser(currentUser as User);
+        } else {
+          // Jika berhasil, gabungkan data auth dan data profil
+          setUser({ ...currentUser, ...profileData });
+        }
+      } else {
+        // Jika pengguna tidak login (logout)
+        setUser(null);
       }
+      
+      // Selesai memuat status autentikasi
       setIsLoading(false);
-    };
-
-    checkUserSession();
-
-    // Listener untuk mendeteksi perubahan status login (SignIn, SignOut)
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user as User ?? null);
     });
 
     // Membersihkan listener saat komponen tidak lagi digunakan
     return () => {
-      authListener.subscription.unsubscribe();
+      authListener?.subscription.unsubscribe();
     };
   }, []);
 
@@ -57,20 +67,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     signIn: async (email: string, password: string) => {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error; // Melempar error jika login gagal
+      if (error) throw error;
     },
     signUp: async (name: string, email: string, password: string) => {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            // Supabase menyimpan nama atau data lain di 'user_metadata'
-            full_name: name,
-          }
+          data: { full_name: name }
         }
       });
-      if (error) throw error; // Melempar error jika registrasi gagal
+      if (error) throw error;
     },
     signOut: async () => {
       const { error } = await supabase.auth.signOut();

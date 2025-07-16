@@ -1,5 +1,18 @@
 // Lokasi: data/types.ts
 
+import type { User as SupabaseUser } from '@supabase/supabase-js';
+
+// Tipe data untuk Pengguna (User)
+// ---
+interface Profile {
+  full_name: string;
+  xp: number;
+  level: number;
+  streak: number;
+}
+export type User = SupabaseUser & Profile;
+// ---
+
 export interface Problem {
   id: string;
   contest: string;
@@ -21,7 +34,6 @@ export interface Contest {
   problems: Problem[];
 }
 
-
 export interface QuizQuestion {
   id: string;
   type: "multiple_choice" | "fill_blank" | "step_proof";
@@ -42,11 +54,11 @@ export interface Quiz {
   difficulty: number;
   description: string;
   completions: number;
-  questions: QuizQuestion[]; // Pastikan properti ini ada
+  questions: QuizQuestion[];
 }
 
 export interface QuizResults {
-  quizId: string; // Pastikan properti ini ada
+  quizId: string;
   score: number;
   totalQuestions: number;
 }
