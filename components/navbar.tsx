@@ -1,39 +1,52 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link" // <-- PERUBAHAN: Impor Link dari next/link
-import { usePathname } from "next/navigation" // <-- PERUBAHAN: Impor usePathname
-import { motion } from "framer-motion"
-import { Moon, Sun, Menu, X, User, LogOut } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useTheme } from "@/contexts/theme-context"
-import { useAuth } from "@/contexts/auth-context"
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { Moon, Sun, Menu, X, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "@/contexts/theme-context";
+import { useAuth } from "@/contexts/auth-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
-  const { user, signOut } = useAuth()
-  const pathname = usePathname() // <-- PERUBAHAN: Menggunakan usePathname()
+  const [isOpen, setIsOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const { user, signOut } = useAuth(); // 'user' bisa jadi null
+  const pathname = usePathname();
 
   const navItems = [
     { name: "Lessons", path: "/lessons" },
     { name: "Quizzes", path: "/quizzes" },
     { name: "Problems", path: "/problems" },
-  ]
+  ];
+
+  // --- FUNGSI BARU UNTUK MENANGANI LOGOUT ---
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Arahkan ke halaman utama setelah sign out
+      // Ini adalah contoh, Anda bisa mengarahkannya ke halaman sign-in juga
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-sm bg-white/80 dark:bg-[#0d1b2a]/80 border-b border-gray-200 dark:border-[#415a77]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group"> {/* <-- PERUBAHAN: to -> href */}
+          <Link href="/" className="flex items-center space-x-2 group">
             <div className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-200">
               ∫
             </div>
@@ -47,15 +60,15 @@ export default function Navbar() {
             {navItems.map((item) => (
               <Link
                 key={item.name}
-                href={item.path} // <-- PERUBAHAN: to -> href
+                href={item.path}
                 className={`relative px-3 py-2 text-sm font-medium transition-colors ${
-                  pathname === item.path // <-- PERUBAHAN: location.pathname -> pathname
+                  pathname === item.path
                     ? "text-blue-600 dark:text-cyan-400"
                     : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400"
                 }`}
               >
                 {item.name}
-                {pathname === item.path && ( // <-- PERUBAHAN: location.pathname -> pathname
+                {pathname === item.path && (
                   <motion.div
                     layoutId="navbar-indicator"
                     className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-cyan-400"
@@ -85,33 +98,35 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center text-white font-semibold">
-                      {user.name.charAt(0)}
+                      {/* PERUBAHAN: Cek nama pengguna dengan aman */}
+                      {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase() || "U"}
                     </div>
-                    <span className="hidden sm:block text-gray-900 dark:text-white">{user.name}</span>
+                    {/* PERUBAHAN: Tampilkan nama pengguna yang benar */}
+                    <span className="hidden sm:block text-gray-900 dark:text-white">{user.user_metadata?.full_name || user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center"> {/* <-- PERUBAHAN: to -> href */}
+                    <Link href="/dashboard" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center"> {/* <-- PERUBAHAN: to -> href */}
+                    <Link href="/profile" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOut} className="flex items-center text-red-600">
+                  <DropdownMenuItem onClick={handleSignOut} className="flex items-center text-red-600 cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/signin"> {/* <-- PERUBAHAN: to -> href */}
+              <Link href="/signin">
                 <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-cyan-600 dark:hover:bg-cyan-700">
                   Sign In
                 </Button>
@@ -137,9 +152,9 @@ export default function Navbar() {
               {navItems.map((item) => (
                 <Link
                   key={item.name}
-                  href={item.path} // <-- PERUBAHAN: to -> href
+                  href={item.path}
                   className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
-                    pathname === item.path // <-- PERUBAHAN: location.pathname -> pathname
+                    pathname === item.path
                       ? "text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-[#415a77]/20"
                       : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-[#415a77]/10"
                   }`}
@@ -153,5 +168,5 @@ export default function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }
