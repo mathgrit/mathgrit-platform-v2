@@ -1,12 +1,11 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { motion } from "framer-motion"
-import Link from "next/link" // <-- Pastikan impor dari next/link
-import { useRouter } from "next/navigation" // <-- PERUBAHAN: Impor useRouter
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Eye, EyeOff, Mail, Lock, User, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,8 +19,13 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState("")
+  
+  // --- PERUBAHAN 1: State untuk menandai pendaftaran sukses ---
+  const [signupSuccess, setSignupSuccess] = useState(false)
+  // -----------------------------------------------------------
+
   const { signUp, isLoading } = useAuth()
-  const router = useRouter() // <-- PERUBAHAN: Menggunakan useRouter
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,11 +43,47 @@ export default function SignUpPage() {
 
     try {
       await signUp(name, email, password)
-      router.push("/dashboard") // <-- PERUBAHAN: navigate(...) -> router.push(...)
+      // --- PERUBAHAN 2: Tampilkan pesan sukses, jangan redirect ---
+      setSignupSuccess(true)
+      // ------------------------------------------------------------
     } catch (err) {
-      setError("Failed to create account")
+      if (err instanceof Error) {
+        setError(err.message || "Failed to create account. The email may already be in use.")
+      } else {
+        setError("An unknown error occurred.")
+      }
     }
   }
+
+  // --- PERUBAHAN 3: Tampilkan pesan ini jika pendaftaran berhasil ---
+  if (signupSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full max-w-md"
+        >
+          <Card className="bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm border-gray-200 dark:border-[#415a77]/30">
+            <CardHeader className="text-center">
+              <div className="flex justify-center mb-4">
+                <CheckCircle className="h-12 w-12 text-green-500" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Pendaftaran Berhasil!</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center">
+              <p className="text-gray-600 dark:text-gray-300">
+                Kami telah mengirimkan link konfirmasi ke email Anda di <span className="font-bold">{email}</span>.
+                Silakan periksa kotak masuk (atau folder spam) untuk mengaktifkan akun Anda.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    )
+  }
+  // -------------------------------------------------------------------
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
@@ -150,11 +190,11 @@ export default function SignUpPage() {
                 <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" required />
                 <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-blue-600 dark:text-cyan-400 hover:underline"> {/* <-- PERUBAHAN: to -> href */}
+                  <Link href="/terms" className="text-blue-600 dark:text-cyan-400 hover:underline">
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-blue-600 dark:text-cyan-400 hover:underline"> {/* <-- PERUBAHAN: to -> href */}
+                  <Link href="/privacy" className="text-blue-600 dark:text-cyan-400 hover:underline">
                     Privacy Policy
                   </Link>
                 </span>
@@ -172,7 +212,7 @@ export default function SignUpPage() {
             <div className="mt-6 text-center">
               <p className="text-gray-600 dark:text-gray-300">
                 Already have an account?{" "}
-                <Link href="/signin" className="text-blue-600 dark:text-cyan-400 hover:underline font-medium"> {/* <-- PERUBAHAN: to -> href */}
+                <Link href="/signin" className="text-blue-600 dark:text-cyan-400 hover:underline font-medium">
                   Sign in
                 </Link>
               </p>
