@@ -1,9 +1,19 @@
 // Lokasi file: app/problems/page.tsx
 
 import ProblemsPage from "@/components/pages/problems-page";
+import LoadingTransition from "@/components/loading-transition";
+import type { Metadata } from 'next';
 
-// Fungsi ini mendefinisikan rute /problems
+export const metadata: Metadata = {
+  title: 'Problem', // Ini sekarang akan bekerja
+};
+
+
 export default function ProblemsRoute() {
-  // Tampilkan komponen halaman yang sudah Anda buat dengan v0
-  return <ProblemsPage />;
+  return (
+  <>
+    <LoadingTransition/>
+    <ProblemsPage />
+  </>
+  );
 }

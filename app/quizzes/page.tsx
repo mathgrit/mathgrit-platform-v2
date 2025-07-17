@@ -1,16 +1,14 @@
-// Lokasi file: app/quizzes/page.tsx
+// Lokasi: app/quizzes/page.tsx
 
-"use client";
-
+import type { Metadata } from 'next';
 import QuizzesPage from "@/components/pages/quizzes-page";
-import LoadingTransition from "@/components/loading-transition";
 
-// Ini adalah file "pintu masuk" untuk rute /quizzes
+// Metadata untuk judul tab browser
+export const metadata: Metadata = {
+  title: 'Practice Quizzes',
+};
+
+// Fungsi ini adalah Server Component yang HANYA menampilkan Client Component (QuizzesPage)
 export default function QuizzesRoute() {
-  return (
-    <>
-      <LoadingTransition />
-      <QuizzesPage />
-    </>
-  );
+  return <QuizzesPage />;
 }
