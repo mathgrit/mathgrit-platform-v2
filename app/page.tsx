@@ -1,13 +1,13 @@
-// File: app/page.tsx
-// GANTI SEMUA ISI FILE LAMA DENGAN KODE DI BAWAH INI
-
-"use client";
-
+import type { Metadata } from 'next';
 import HomePage from "@/components/pages/home-page";
 import LoadingTransition from "@/components/loading-transition";
 
-// Ini adalah halaman untuk rute "/" (halaman utama).
-// Tugasnya HANYA menampilkan komponen HomePage.
+export const metadata: Metadata = {
+  title: 'MathGrit - Immersive Math Learning',
+  description: 'Master mathematics through interactive lessons, adaptive quizzes, and challenging contest problems.',
+};
+
+// File ini sekarang adalah Server Component yang menampilkan Client Component (HomePage)
 export default function Home() {
   return (
     <>
