@@ -30,7 +30,7 @@ export default function LoadingTransition() {
         className="flex items-center space-x-3"
       >
         <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-          ∫
+          ∞
         </div>
         <motion.span
           initial={{ opacity: 0 }}
