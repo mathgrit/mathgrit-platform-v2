@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import HomePage from "@/components/pages/home-page";
-import LoadingTransition from "@/components/loading-transition";
 
 export const metadata: Metadata = {
   title: 'MathGrit - Immersive Math Learning',
@@ -11,7 +10,6 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <LoadingTransition />
       <HomePage />
     </>
   );

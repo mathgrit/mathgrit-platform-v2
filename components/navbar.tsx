@@ -19,43 +19,49 @@ import {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { user, signOut } = useAuth(); // 'user' bisa jadi null
+  const { user, signOut } = useAuth();
   const pathname = usePathname();
 
-  const navItems = [
+  const loggedInNavItems = [
+    { name: "Dashboard", path: "/dashboard" },
     { name: "Lessons", path: "/lessons" },
     { name: "Quizzes", path: "/quizzes" },
     { name: "Problems", path: "/problems" },
   ];
 
-  // --- FUNGSI BARU UNTUK MENANGANI LOGOUT ---
+  const loggedOutNavItems = [
+    { name: "Lessons", path: "/lessons" },
+    { name: "Quizzes", path: "/quizzes" },
+    { name: "Problems", path: "/problems" },
+  ];
+
+  const navItems = user ? loggedInNavItems : loggedOutNavItems;
+  const logoPath = user ? "/dashboard" : "/";
+
+  // --- PERUBAHAN: Fungsi baru untuk menangani sign out dan redirect ---
   const handleSignOut = async () => {
     try {
       await signOut();
-      // Arahkan ke halaman utama setelah sign out
-      // Ini adalah contoh, Anda bisa mengarahkannya ke halaman sign-in juga
+      // Arahkan ke halaman utama secara paksa setelah sign out
       window.location.href = "/";
     } catch (error) {
       console.error("Error signing out:", error);
     }
   };
 
-
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-sm bg-white/80 dark:bg-[#0d1b2a]/80 border-b border-gray-200 dark:border-[#415a77]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-200">
+          <Link href={logoPath} className="flex items-center space-x-2 group">
+            <div className="text-6xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-200">
               ∞
             </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-cyan-400 transition-colors">
+            <span className="text-3xl font-bold text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-cyan-400 transition-colors">
               MathGrit
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
@@ -80,9 +86,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right side */}
           <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
             <Button
               variant="ghost"
               size="icon"
@@ -92,33 +96,25 @@ export default function Navbar() {
               {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </Button>
 
-            {/* User Menu or Sign In */}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full flex items-center justify-center text-white font-semibold">
-                      {/* PERUBAHAN: Cek nama pengguna dengan aman */}
                       {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase() || "U"}
                     </div>
-                    {/* PERUBAHAN: Tampilkan nama pengguna yang benar */}
                     <span className="hidden sm:block text-gray-900 dark:text-white">{user.user_metadata?.full_name || user.email}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center">
-                      <User className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center">
+                    <Link href="/profile" className="flex items-center cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
+                  {/* PERUBAHAN: Tombol memanggil handleSignOut */}
                   <DropdownMenuItem onClick={handleSignOut} className="flex items-center text-red-600 cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
@@ -133,14 +129,12 @@ export default function Navbar() {
               </Link>
             )}
 
-            {/* Mobile menu button */}
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}

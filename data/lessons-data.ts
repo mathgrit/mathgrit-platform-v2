@@ -18,6 +18,32 @@ export const courses: Course[] = [
       { name: "Practice Problems", type: "pdf", url: "/materials/calc-practice.pdf" },
     ],
     // DATA BARU DITAMBAHKAN DI SINI
+
+
+    slides: [
+  // --- Slide 1 ---
+  {
+    content: [
+      { type: 'heading', content: 'Introduction to Limits' },
+      { type: 'text', content: 'In this section, we explore the concept of limits, which forms the foundation of calculus. A limit describes the behavior of a function as its input approaches a particular value.' },
+    ]
+  },
+  // --- Slide 2 ---
+  {
+    content: [
+      { type: 'formula', content: '\\lim_{x \\to a} f(x) = L' },
+      { type: 'text', content: 'This expression means that the value of f(x) gets arbitrarily close to L as x gets closer and closer to a.' },
+    ]
+  },
+  // --- Slide 3 ---
+  {
+    content: [
+      { type: 'heading', content: 'Limit Laws' },
+      { type: 'text', content: 'We can use several laws to simplify the process of finding limits.'},
+    ]
+  },
+],
+
     interactiveExamples: [
       {
         title: "Evaluating Limits",

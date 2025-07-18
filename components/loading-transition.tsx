@@ -1,46 +1,77 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoadingTransition() {
-  const [isVisible, setIsVisible] = useState(true)
+  const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const isInitialLoad = sessionStorage.getItem('isInitialLoadDone');
+    if (!isInitialLoad) {
+      sessionStorage.setItem('isInitialLoadDone', 'true');
+      return;
+    }
+    
+    setIsLoading(true);
+    
     const timer = setTimeout(() => {
-      setIsVisible(false)
-    }, 500)
+      setIsLoading(false);
+    }, 1200);
 
-    return () => clearTimeout(timer)
-  }, [])
-
-  if (!isVisible) return null
+    return () => clearTimeout(timer);
+  }, [pathname]);
 
   return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 0 }}
-      transition={{ duration: 0.5, delay: 0.3 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-[#0d1b2a]"
-    >
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center space-x-3"
-      >
-        <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-          ∞
-        </div>
-        <motion.span
+    <AnimatePresence>
+      {isLoading && (
+        <motion.div
+          key="loading-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-3xl font-bold text-gray-900 dark:text-white"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 dark:bg-[#0d1b2a]/80 backdrop-blur-sm"
         >
-          MathGrit
-        </motion.span>
-      </motion.div>
-    </motion.div>
-  )
+          {/* Bar loading di atas */}
+          <motion.div
+            className="fixed top-0 left-0 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 z-[51]"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 1, ease: "circOut" }}
+            style={{ transformOrigin: "left" }}
+          />
+
+          {/* Logo yang berputar di tengah */}
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="flex items-center space-x-4" // Jarak antar elemen diperbesar
+          >
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.5,
+                ease: "linear",
+              }}
+              // PERUBAHAN 1: Ukuran ikon diubah dari text-4xl menjadi text-6xl
+              className="text-6xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent"
+            >
+              ∞
+            </motion.div>
+            
+            {/* PERUBAHAN 2: Menambahkan kembali tulisan "MathGrit" */}
+            <span className="text-5xl font-bold text-gray-900 dark:text-white">
+              MathGrit
+            </span>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }

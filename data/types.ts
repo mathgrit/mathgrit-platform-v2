@@ -63,6 +63,15 @@ export interface QuizResults {
   totalQuestions: number;
 }
 
+export interface ContentBlock {
+  type: 'heading' | 'text' | 'formula' | 'image';
+  content: string;
+}
+
+export interface Slide {
+  content: ContentBlock[];
+}
+
 export interface Course {
   id: string;
   title: string;
@@ -75,6 +84,9 @@ export interface Course {
   students: number;
   videoPlaylist?: string;
   materials?: { name: string; type: string; url: string }[];
+  
+  // Tambahkan properti-properti yang hilang di sini
+  slides?: Slide[];
   interactiveExamples?: any[];
   keyFormulas?: any[];
 }

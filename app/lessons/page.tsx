@@ -1,13 +1,16 @@
-// Lokasi: app/lessons/page.tsx
+// Lokasi file: app/lessons/page.tsx
+
 
 import type { Metadata } from 'next';
-import LessonsPage from "@/components/pages/lessons-page";
+// Pastikan ini mengimpor komponen LessonsPage, bukan yang lain
+import LessonsPage from "@/components/pages/lessons-page"; 
+
 
 export const metadata: Metadata = {
   title: 'Lessons',
 };
 
-// File ini adalah 'pintu masuk' untuk URL /lessons
+// Pastikan fungsi ini me-render <LessonsPage />
 export default function LessonsRoute() {
   return <LessonsPage />;
 }

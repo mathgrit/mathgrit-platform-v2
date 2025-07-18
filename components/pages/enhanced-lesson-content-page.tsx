@@ -13,6 +13,7 @@ import YouTubePlayer from "@/components/youtube-player"
 import InteractiveExample from "@/components/interactive-example"
 import { BlockMath } from "react-katex"
 import type { Course } from "@/data/types"
+import LessonSlideViewer from '@/components/lesson-slide-viewer'; // <-- Impor komponen baru
 
 export default function EnhancedLessonContentPage({ course }: { course: Course }) {
   const [activeTab, setActiveTab] = useState("video")
@@ -93,36 +94,15 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
             </motion.div>
           </TabsContent>
 
-          <TabsContent value="materials" className="space-y-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <Card className="bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm border-gray-200 dark:border-[#415a77]/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center"><Download className="h-5 w-5 mr-2" />Downloadable Resources</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {course.materials?.map((material, index) => (
-                      <a href={material.url} target="_blank" rel="noopener noreferrer" key={index} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#415a77]/20 rounded-lg hover:bg-gray-100 dark:hover:bg-[#415a77]/30 transition-colors">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center"><FileText className="h-5 w-5 text-white" /></div>
-                          <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">{material.name}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">PDF</p>
-                          </div>
-                        </div>
-                        <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-2" />Download</Button>
-                      </a>
-                    ))}
-                  </div>
-                  <div className="mt-6 flex justify-end">
-                    <Button onClick={() => markSectionComplete("materials")} disabled={completedSections.has("materials")} className="bg-green-600 hover:bg-green-700">
-                      {completedSections.has("materials") ? <><CheckCircle className="h-4 w-4 mr-2" />Completed</> : <><Circle className="h-4 w-4 mr-2" />Mark as Reviewed</>}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </TabsContent>
+            <TabsContent value="materials" className="space-y-6">
+              {course.slides && course.slides.length > 0 ? (
+                <LessonSlideViewer slides={course.slides} />
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  Materi pelajaran untuk kursus ini belum tersedia.
+                </div>
+              )}
+            </TabsContent>
 
           <TabsContent value="examples" className="space-y-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6">
