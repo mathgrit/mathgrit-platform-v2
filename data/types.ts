@@ -62,3 +62,19 @@ export interface QuizResults {
   score: number;
   totalQuestions: number;
 }
+
+export interface Course {
+  id: string;
+  title: string;
+  thumbnail: string;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  duration: string;
+  topic: string;
+  description: string;
+  rating: number;
+  students: number;
+  videoPlaylist?: string;
+  materials?: { name: string; type: string; url: string }[];
+  interactiveExamples?: any[];
+  keyFormulas?: any[];
+}
