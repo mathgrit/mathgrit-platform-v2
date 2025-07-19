@@ -38,11 +38,10 @@ export default function Navbar() {
   const navItems = user ? loggedInNavItems : loggedOutNavItems;
   const logoPath = user ? "/dashboard" : "/";
 
-  // --- PERUBAHAN: Fungsi baru untuk menangani sign out dan redirect ---
   const handleSignOut = async () => {
     try {
       await signOut();
-      // Arahkan ke halaman utama secara paksa setelah sign out
+      // Mengarahkan ke halaman utama setelah sign out
       window.location.href = "/";
     } catch (error) {
       console.error("Error signing out:", error);
@@ -114,7 +113,6 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  {/* PERUBAHAN: Tombol memanggil handleSignOut */}
                   <DropdownMenuItem onClick={handleSignOut} className="flex items-center text-red-600 cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
                     Sign Out
@@ -147,12 +145,12 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.path}
+                  onClick={() => setIsOpen(false)}
                   className={`block px-3 py-2 text-base font-medium rounded-md transition-colors ${
                     pathname === item.path
                       ? "text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-[#415a77]/20"
                       : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-gray-50 dark:hover:bg-[#415a77]/10"
                   }`}
-                  onClick={() => setIsOpen(false)}
                 >
                   {item.name}
                 </Link>

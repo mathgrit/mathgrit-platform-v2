@@ -7,13 +7,10 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-
-// PERUBAHAN: Mengimpor hook untuk data live
 import { useAuth } from "@/contexts/auth-context"
 import { useProgress } from "@/contexts/progress-context"
 
 export default function DashboardPage() {
-  // PERUBAHAN: Menggunakan data live dari hook, bukan data mock
   const { user } = useAuth()
   const { progress } = useProgress()
 
@@ -34,7 +31,6 @@ export default function DashboardPage() {
     { id: "geometry-intro", title: "Euclidean Geometry", progress: 45, difficulty: "Intermediate" },
   ]
 
-  // PERUBAHAN: Menambahkan loading state jika data user belum siap
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -66,7 +62,6 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-8">
-          {/* PERUBAHAN: Menggunakan nama dari data user asli */}
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Welcome back, {user.full_name || user.email}! 👋</h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mt-2">Ready to continue your mathematical journey?</p>
         </motion.div>
@@ -86,7 +81,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </motion.div>
-
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
             <Card className="bg-gradient-to-r from-orange-500 to-red-400 text-white shadow-lg">
               <CardContent className="p-6">
@@ -100,7 +94,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </motion.div>
-
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
             <Card className="bg-gradient-to-r from-purple-500 to-pink-400 text-white shadow-lg">
               <CardContent className="p-6">
@@ -114,7 +107,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </motion.div>
-
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}>
             <Card className="bg-gradient-to-r from-green-500 to-teal-400 text-white shadow-lg">
               <CardContent className="p-6">
@@ -145,7 +137,10 @@ export default function DashboardPage() {
                     <span>Progress</span>
                     <span>75%</span>
                   </div>
-                  <Progress value={75} className="h-2 bg-blue-400" />
+                  <Progress 
+                    value={75} 
+                    className="h-2 bg-white/20 [&>div]:bg-gradient-to-r [&>div]:from-cyan-400 [&>div]:to-blue-500" 
+                  />
                 </div>
               </div>
               <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold">
@@ -157,7 +152,6 @@ export default function DashboardPage() {
 
         {/* Two Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* My Progress Card */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.6 }}>
             <Card className="shadow-md dark:bg-[#1b263b]/80 dark:border-[#415a77]/30">
               <CardHeader>
@@ -195,8 +189,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </motion.div>
-
-          {/* Recent Activity Card */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.7 }}>
             <Card className="shadow-md dark:bg-[#1b263b]/80 dark:border-[#415a77]/30">
               <CardHeader>
@@ -205,7 +197,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {recentActivity.map((activity, index) => {
-                  const IconComponent = getActivityIcon(activity.type)
+                  const IconComponent = getActivityIcon(activity.type);
                   return (
                     <div key={index} className="flex items-center space-x-4 p-3 rounded-lg bg-gray-50 dark:bg-[#415a77]/20 hover:bg-gray-100 dark:hover:bg-[#415a77]/30 transition-colors">
                       <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full">
@@ -217,7 +209,7 @@ export default function DashboardPage() {
                       </div>
                       <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">+{activity.xp} XP</Badge>
                     </div>
-                  )
+                  );
                 })}
               </CardContent>
             </Card>
@@ -226,7 +218,6 @@ export default function DashboardPage() {
 
         {/* Recommendations and Achievements */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recommended For You */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }}>
             <Card className="shadow-md dark:bg-[#1b263b]/80 dark:border-[#415a77]/30">
               <CardHeader>
@@ -254,8 +245,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </motion.div>
-
-          {/* Achievements */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.9 }}>
             <Card className="shadow-md dark:bg-[#1b263b]/80 dark:border-[#415a77]/30">
               <CardHeader>

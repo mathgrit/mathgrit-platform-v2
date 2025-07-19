@@ -96,8 +96,8 @@ export default function SignUpPage() {
         <Card className="bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm border-gray-200 dark:border-[#415a77]/30">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                ∫
+              <div className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                ∞
               </div>
               <span className="text-2xl font-bold text-gray-900 dark:text-white">MathGrit</span>
             </div>
