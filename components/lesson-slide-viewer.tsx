@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import LatexRenderer from '@/components/ui/latex-renderer';
-import { BlockMath } from 'react-katex';
-import type { Slide, ContentBlock } from '@/data/types';
+import LatexContentRenderer from '@/components/ui/latex-content-renderer'; // Impor parser baru
+import type { Slide } from '@/data/types';
 
 interface LessonSlideViewerProps {
   slides: Slide[];
@@ -25,29 +24,12 @@ export default function LessonSlideViewer({ slides }: LessonSlideViewerProps) {
     setCurrentSlide((prev) => Math.max(prev - 1, 0));
   };
 
-  const progressPercentage = ((currentSlide + 1) / slides.length) * 100;
+  const progressPercentage = slides.length > 0 ? ((currentSlide + 1) / slides.length) * 100 : 0;
   const slide = slides[currentSlide];
 
-  const renderSlideContent = (block: ContentBlock) => {
-    switch (block.type) {
-      case 'heading':
-        return <h2 className="text-2xl font-bold text-gray-900 dark:text-white"><LatexRenderer>{block.content}</LatexRenderer></h2>;
-      case 'text':
-        return <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300"><LatexRenderer>{block.content}</LatexRenderer></p>;
-      case 'formula':
-        return <div className="py-4"><BlockMath math={block.content} /></div>;
-      case 'image':
-        return <img src={block.content} alt="Lesson visual" className="w-full h-auto rounded-lg" />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    // PERUBAHAN LEBAR: diubah dari max-w-4xl menjadi max-w-6xl
     <div className="w-full max-w-6xl mx-auto">
       <Card className="bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm">
-        {/* PERUBAHAN TINGGI: diubah dari min-h-[400px] menjadi min-h-[550px] */}
         <CardContent className="p-8 min-h-[550px] flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div
@@ -56,13 +38,10 @@ export default function LessonSlideViewer({ slides }: LessonSlideViewerProps) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3 }}
-              className="flex-grow space-y-4"
+              className="flex-grow"
             >
-              {slide.content.map((block, index) => (
-                <div key={index}>
-                  {renderSlideContent(block)}
-                </div>
-              ))}
+              {/* Gunakan komponen parser baru di sini */}
+              <LatexContentRenderer text={slide.content} />
             </motion.div>
           </AnimatePresence>
         </CardContent>

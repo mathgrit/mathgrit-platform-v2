@@ -17,27 +17,27 @@ export const calculusCourses: Course[] = [
       { name: "Derivative Rules Cheat Sheet", type: "pdf", url: "/materials/derivative-rules.pdf" },
       { name: "Practice Problems", type: "pdf", url: "/materials/calc-practice.pdf" },
     ],
-    slides: [
-      {
-        content: [
-          { type: 'heading', content: 'Introduction to Limits' },
-          { type: 'text', content: 'In this section, we explore the concept of limits, which forms the foundation of calculus. A limit describes the behavior of a function as its input approaches a particular value.' },
-        ]
-      },
-      {
-        content: [
-          { type: 'formula', content: '\\lim_{x \\to a} f(x) = L' },
-          { type: 'text', content: 'This expression means that the value of f(x) gets arbitrarily close to L as x gets closer and closer to a.' },
-        ]
-      },
-      {
-        content: [
-          { type: 'heading', content: 'Limit Laws' },
-          { type: 'text', content: 'We can use several laws to simplify the process of finding limits.'},
-        ]
-      },
-    ],
-    interactiveExamples: [
+          slides: [
+              // --- Slide 1 ---
+              {
+                content: `
+            \\chapter{Introduction to Limits}
+            \\section{Definition of Limits}
+            In this section, we explore the concept of limits, which forms the foundation of calculus. A limit describes the behavior of a function as its input approaches a particular value. For example, consider the function $f(x) = x^2$. As $x$ gets closer to 2, $f(x)$ gets closer to 4.
+            `
+              },
+              // --- Slide 2 ---
+              {
+                content: `
+            \\section{The Limit Formula}
+            The limit of $f(x)$ as $x$ approaches $a$ is written as:
+            $\\lim_{x \\to a} f(x) = L$
+            This expression means that the value of $f(x)$ gets arbitrarily close to $L$ as $x$ gets closer and closer to $a$.
+            `
+              },
+      ],
+
+  interactiveExamples: [
       {
         title: "Evaluating Limits",
         description: "Learn to evaluate limits step by step using algebraic manipulation.",

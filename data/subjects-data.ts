@@ -6,7 +6,7 @@ import type { Subject } from './types';
 import { calculusCourses } from './courses/calculus';
 import { algebraCourses } from './courses/algebra';
 import { geometryCourses } from './courses/geometry';
-import { discreteCourses } from './courses/discrete';
+import { discreteCourses } from './courses/discrete'; // Pastikan ini mengimpor dari discrete.ts
 import { appliedCourses } from './courses/applied';
 
 export const subjectsData: Subject[] = [
@@ -15,34 +15,34 @@ export const subjectsData: Subject[] = [
     name: "Kalkulus",
     description: "Pelajari dasar-dasar kalkulus, mulai dari limit, turunan, hingga integral.",
     icon: "Sigma",
-    courses: calculusCourses, // Gunakan data yang diimpor
+    courses: calculusCourses,
   },
   {
     id: "algebra",
     name: "Aljabar",
     description: "Kuatkan fondasi Anda dalam konsep aljabar, dari dasar hingga tingkat lanjut.",
     icon: "Variable",
-    courses: algebraCourses, // Gunakan data yang diimpor
+    courses: algebraCourses,
   },
   {
     id: "geometry",
     name: "Geometri",
     description: "Jelajahi keindahan pembuktian geometris dan penalaran spasial.",
     icon: "Compass",
-    courses: geometryCourses, // Gunakan data yang diimpor
+    courses: geometryCourses,
   },
   {
     id: "discrete",
     name: "Matematika Diskrit",
     description: "Selami dunia kombinatorika, teori graf, dan logika matematika.",
     icon: "Puzzle",
-    courses: discreteCourses, // Gunakan data yang diimpor
+    courses: discreteCourses, // File ini sekarang berisi kedua kursus
   },
   {
     id: "applied",
     name: "Matematika Terapan",
     description: "Pelajari aplikasi matematika di dunia nyata, seperti statistika dan probabilitas.",
     icon: "BarChart2",
-    courses: appliedCourses, // Gunakan data yang diimpor
+    courses: appliedCourses,
   },
 ];

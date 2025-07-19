@@ -1,4 +1,7 @@
+// Lokasi: data/courses/discrete.ts
+
 import type { Course } from '../types';
+import { numberTheoryCourses } from './number-theory'; // Impor data baru
 
 export const discreteCourses: Course[] = [
   {
@@ -12,4 +15,6 @@ export const discreteCourses: Course[] = [
     rating: 4.6,
     students: 6400,
   },
+  // Gabungkan kursus Teori Bilangan ke dalam array ini
+  ...numberTheoryCourses,
 ];

@@ -9,14 +9,9 @@ interface Profile {
 }
 export type User = SupabaseUser & Profile;
 
-// Tipe data untuk Konten Pelajaran
-export interface ContentBlock {
-  type: 'heading' | 'text' | 'formula' | 'image';
-  content: string;
-}
 
 export interface Slide {
-  content: ContentBlock[];
+  content: string;
 }
 
 // Tipe data untuk Pelajaran/Kursus
