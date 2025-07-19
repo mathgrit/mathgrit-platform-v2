@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { ChevronLeft, Download, BookOpen, Play, FileText, Calculator, CheckCircle, Circle } from "lucide-react"
+import { ChevronLeft, BookOpen, Play, FileText, Calculator } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -12,13 +12,12 @@ import { useProgress } from "@/contexts/progress-context"
 import YouTubePlayer from "@/components/youtube-player"
 import InteractiveExample from "@/components/interactive-example"
 import { BlockMath } from "react-katex"
+import LessonSlideViewer from "@/components/lesson-slide-viewer"
 import type { Course } from "@/data/types"
-import LessonSlideViewer from '@/components/lesson-slide-viewer'; // <-- Impor komponen baru
 
 export default function EnhancedLessonContentPage({ course }: { course: Course }) {
-  const [activeTab, setActiveTab] = useState("video")
-  const [completedSections, setCompletedSections] = useState<Set<string>>(new Set())
-  const { getProgress, updateProgress } = useProgress()
+  const [activeTab, setActiveTab] = useState("materials")
+  const { getProgress } = useProgress()
 
   if (!course) {
     return (
@@ -31,32 +30,14 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
     )
   }
 
-  const markSectionComplete = (sectionId: string) => {
-    const newCompleted = new Set(completedSections)
-    newCompleted.add(sectionId)
-    setCompletedSections(newCompleted)
-
-    const totalSections = 4 // video, materials, examples, formulas
-    const newProgress = Math.round((newCompleted.size / totalSections) * 100)
-    updateProgress(course.id, newProgress)
-  }
-
   return (
     <div className="min-h-screen pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <Link
-            href="/lessons"
-            className="inline-flex items-center text-blue-600 dark:text-cyan-400 hover:underline mb-4"
-          >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-8">
+          <Link href={`/lessons/${course.topic.toLowerCase()}`} className="inline-flex items-center text-blue-600 dark:text-cyan-400 hover:underline mb-4">
             <ChevronLeft className="h-4 w-4 mr-1" />
-            Back to Lessons
+            Back to {course.topic}
           </Link>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">{course.title}</h1>
           <p className="text-gray-600 dark:text-gray-300 mb-4">{course.description}</p>
@@ -71,42 +52,37 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
           </div>
         </motion.div>
 
-        {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="materials" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm">
+            <TabsTrigger value="materials" className="flex items-center space-x-2"><BookOpen className="h-4 w-4" /><span>Materi</span></TabsTrigger>
             <TabsTrigger value="video" className="flex items-center space-x-2"><Play className="h-4 w-4" /><span>Video</span></TabsTrigger>
-            <TabsTrigger value="materials" className="flex items-center space-x-2"><FileText className="h-4 w-4" /><span>Materials</span></TabsTrigger>
-            <TabsTrigger value="examples" className="flex items-center space-x-2"><Calculator className="h-4 w-4" /><span>Examples</span></TabsTrigger>
-            <TabsTrigger value="formulas" className="flex items-center space-x-2"><BookOpen className="h-4 w-4" /><span>Formulas</span></TabsTrigger>
+            <TabsTrigger value="examples" className="flex items-center space-x-2"><Calculator className="h-4 w-4" /><span>Contoh</span></TabsTrigger>
+            <TabsTrigger value="formulas" className="flex items-center space-x-2"><FileText className="h-4 w-4" /><span>Rumus</span></TabsTrigger>
           </TabsList>
 
-          <TabsContent value="video" className="space-y-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <YouTubePlayer
-                playlistId={course.videoPlaylist}
-                title={course.title}
-              />
-              <div className="mt-4 flex justify-end">
-                <Button onClick={() => markSectionComplete("video")} disabled={completedSections.has("video")} className="bg-green-600 hover:bg-green-700">
-                  {completedSections.has("video") ? <><CheckCircle className="h-4 w-4 mr-2" />Completed</> : <><Circle className="h-4 w-4 mr-2" />Mark as Watched</>}
-                </Button>
-              </div>
-            </motion.div>
+          {/* Tab Materi (Slides) */}
+          <TabsContent value="materials">
+            {course.slides && course.slides.length > 0 ? (
+              <LessonSlideViewer slides={course.slides} />
+            ) : (
+              <div className="text-center py-12 text-gray-500">Materi pelajaran untuk kursus ini belum tersedia.</div>
+            )}
           </TabsContent>
 
-            <TabsContent value="materials" className="space-y-6">
-              {course.slides && course.slides.length > 0 ? (
-                <LessonSlideViewer slides={course.slides} />
-              ) : (
-                <div className="text-center py-12 text-gray-500">
-                  Materi pelajaran untuk kursus ini belum tersedia.
-                </div>
-              )}
-            </TabsContent>
+          {/* Tab Video */}
+          <TabsContent value="video">
+            {course.videoPlaylist ? (
+              <YouTubePlayer playlistId={course.videoPlaylist} title={course.title} />
+            ) : (
+              <div className="text-center py-12 text-gray-500">Video untuk kursus ini belum tersedia.</div>
+            )}
+          </TabsContent>
 
+          {/* Tab Contoh Interaktif */}
           <TabsContent value="examples" className="space-y-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6">
-              {course.interactiveExamples?.map((example, index) => (
+            {course.interactiveExamples && course.interactiveExamples.length > 0 ? (
+              course.interactiveExamples.map((example, index) => (
                 <InteractiveExample
                   key={index}
                   title={example.title}
@@ -114,40 +90,33 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
                   initialExpression={example.initialExpression}
                   steps={example.steps}
                 />
-              ))}
-              <div className="flex justify-end">
-                <Button onClick={() => markSectionComplete("examples")} disabled={completedSections.has("examples")} className="bg-green-600 hover:bg-green-700">
-                  {completedSections.has("examples") ? <><CheckCircle className="h-4 w-4 mr-2" />Completed</> : <><Circle className="h-4 w-4 mr-2" />Mark as Completed</>}
-                </Button>
-              </div>
-            </motion.div>
+              ))
+            ) : (
+              <div className="text-center py-12 text-gray-500">Contoh interaktif untuk kursus ini belum tersedia.</div>
+            )}
           </TabsContent>
 
+          {/* Tab Rumus Kunci */}
           <TabsContent value="formulas" className="space-y-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-6">
-              {course.keyFormulas?.map((section, index) => (
-                <Card key={index} className="bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm border-gray-200 dark:border-[#415a77]/30">
+            {course.keyFormulas && course.keyFormulas.length > 0 ? (
+              course.keyFormulas.map((section, index) => (
+                <Card key={index} className="bg-white/80 dark:bg-[#1b263b]/80">
                   <CardHeader><CardTitle>{section.title}</CardTitle></CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {section.formulas.map((formula: string, formulaIndex: number) => (
-                        <div key={formulaIndex} className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
-                           <BlockMath math={formula} />
-                        </div>
-                      ))}
-                    </div>
+                  <CardContent className="space-y-4">
+                    {section.formulas.map((formula: string, formulaIndex: number) => (
+                      <div key={formulaIndex} className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
+                         <BlockMath math={formula} />
+                      </div>
+                    ))}
                   </CardContent>
                 </Card>
-              ))}
-              <div className="flex justify-end">
-                <Button onClick={() => markSectionComplete("formulas")} disabled={completedSections.has("formulas")} className="bg-green-600 hover:bg-green-700">
-                  {completedSections.has("formulas") ? <><CheckCircle className="h-4 w-4 mr-2" />Completed</> : <><Circle className="h-4 w-4 mr-2" />Mark as Reviewed</>}
-                </Button>
-              </div>
-            </motion.div>
+              ))
+            ) : (
+              <div className="text-center py-12 text-gray-500">Rumus kunci untuk kursus ini belum tersedia.</div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
     </div>
-  )
+  );
 }
