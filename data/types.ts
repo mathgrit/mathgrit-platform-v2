@@ -1,5 +1,4 @@
 import type { User as SupabaseUser } from '@supabase/supabase-js';
-import type { ElementType } from 'react';
 
 // Tipe data untuk Pengguna (User)
 interface Profile {
@@ -43,7 +42,7 @@ export interface Subject {
   id: string;
   name: string;
   description: string;
-  icon: string; // <-- Pastikan ini adalah string
+  icon: string;
   courses: Course[];
 }
 

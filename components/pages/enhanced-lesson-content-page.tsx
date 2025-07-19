@@ -55,10 +55,10 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
         {/* Main Content Tabs */}
         <Tabs defaultValue="materials" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-white/80 dark:bg-[#1b263b]/80 backdrop-blur-sm">
-            <TabsTrigger value="materials" className="flex items-center space-x-2"><BookOpen className="h-4 w-4" /><span>Materi</span></TabsTrigger>
-            <TabsTrigger value="video" className="flex items-center space-x-2"><Play className="h-4 w-4" /><span>Video</span></TabsTrigger>
-            <TabsTrigger value="examples" className="flex items-center space-x-2"><Calculator className="h-4 w-4" /><span>Contoh</span></TabsTrigger>
-            <TabsTrigger value="formulas" className="flex items-center space-x-2"><FileText className="h-4 w-4" /><span>Rumus</span></TabsTrigger>
+            <TabsTrigger value="materials" className="flex items-center space-x-2"><BookOpen className="h-4 w-4" /><span>Materials</span></TabsTrigger>
+            <TabsTrigger value="video" className="flex items-center space-x-2"><Play className="h-4 w-4" /><span>Videos</span></TabsTrigger>
+            <TabsTrigger value="examples" className="flex items-center space-x-2"><Calculator className="h-4 w-4" /><span>Examples</span></TabsTrigger>
+            <TabsTrigger value="formulas" className="flex items-center space-x-2"><FileText className="h-4 w-4" /><span>Formulas</span></TabsTrigger>
           </TabsList>
 
           {/* Tab Materi (Slides) */}
@@ -66,7 +66,7 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
             {course.slides && course.slides.length > 0 ? (
               <LessonSlideViewer slides={course.slides} />
             ) : (
-              <div className="text-center py-12 text-gray-500">Materi pelajaran untuk kursus ini belum tersedia.</div>
+              <div className="text-center py-20 text-gray-500">Materi pelajaran untuk kursus ini belum tersedia.</div>
             )}
           </TabsContent>
 
@@ -75,7 +75,7 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
             {course.videoPlaylist ? (
               <YouTubePlayer playlistId={course.videoPlaylist} title={course.title} />
             ) : (
-              <div className="text-center py-12 text-gray-500">Video untuk kursus ini belum tersedia.</div>
+              <div className="text-center py-20 text-gray-500">Video untuk kursus ini belum tersedia.</div>
             )}
           </TabsContent>
 
@@ -92,7 +92,7 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
                 />
               ))
             ) : (
-              <div className="text-center py-12 text-gray-500">Contoh interaktif untuk kursus ini belum tersedia.</div>
+              <div className="text-center py-20 text-gray-500">Contoh interaktif untuk kursus ini belum tersedia.</div>
             )}
           </TabsContent>
 
@@ -112,7 +112,7 @@ export default function EnhancedLessonContentPage({ course }: { course: Course }
                 </Card>
               ))
             ) : (
-              <div className="text-center py-12 text-gray-500">Rumus kunci untuk kursus ini belum tersedia.</div>
+              <div className="text-center py-20 text-gray-500">Rumus kunci untuk kursus ini belum tersedia.</div>
             )}
           </TabsContent>
         </Tabs>
